@@ -1,0 +1,17 @@
+{
+  "extends": ["tslint:recommended",
+    "tslint-react",
+    "tslint-sonarts"
+  ],
+  "rules": {
+    "indent": [true, "spaces", 4],
+    "brace-style": ["error", "stroustrup"],
+    "max-len": ["error", {"code": 120}]
+  },
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts"
+    ]
+  }
+}
