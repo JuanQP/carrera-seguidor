@@ -7,7 +7,7 @@
     "indent": [true, "spaces", 4],
     "brace-style": ["error", "stroustrup"],
     "max-line-length": [true, {"code": 140}],
-    "one-line": false,
+    "one-line": false
   },
   "linterOptions": {
     "exclude": [
