@@ -142,14 +142,14 @@ class CarreraItem extends React.Component<ICarreraItemProps, ICarreraItemState> 
     public render() {
         return (
             <div>
-                <Jumbotron>
+                <Jumbotron className={"p-4"}>
                     <h1>{this.props.carrera.nombre}</h1>
                     <p>
                         Título de <strong>{this.props.carrera.titulo}</strong> en <strong>{this.props.carrera.universidad}</strong>.
                     </p>
                     <this.RenderMateriasAprobadas/>
-                    <Button onClick={this.handleNuevoNivel}>Agregar nivel</Button>
-                    <Button onClick={this.handleEditarCarreraModalToggle}>Editar carrera</Button>
+                    <Button color={"primary"} onClick={this.handleNuevoNivel}>Agregar nivel</Button>
+                    <Button color={"primary"} onClick={this.handleEditarCarreraModalToggle}>Editar carrera</Button>
                 </Jumbotron>
                 <CardDeck>
                 {this.renderNiveles()}
