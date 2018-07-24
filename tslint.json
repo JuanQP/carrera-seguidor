@@ -6,7 +6,8 @@
   "rules": {
     "indent": [true, "spaces", 4],
     "brace-style": ["error", "stroustrup"],
-    "max-len": ["error", {"code": 120}]
+    "max-line-length": [true, {"code": 140}],
+    "one-line": false,
   },
   "linterOptions": {
     "exclude": [
