@@ -47,7 +47,7 @@ class MateriaItem extends React.Component<IMateriaItemProps, IMateriaItemState> 
                 action={true}
                 color={this.color(this.props.materia)}
                 onClick={this.handleClick}
-                className={"text-truncate"}
+                className={"text-overflow"}
             >
                 {this.props.materia.nombre}
             </ListGroupItem>
