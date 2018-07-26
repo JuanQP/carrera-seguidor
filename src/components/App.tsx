@@ -1,3 +1,5 @@
+import { faCode } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Alert, Nav, Navbar, NavbarBrand, NavItem, NavLink } from "reactstrap";
 import Button from "reactstrap/lib/Button";
@@ -13,146 +15,179 @@ import { Parser } from "../domain/parser";
 import CarreraItem from "./CarreraItem";
 
 interface IAppProps extends React.ClassAttributes<App> {
-    carrera: Carrera;
+  carrera: Carrera;
 }
 
 interface IAppState extends React.ClassAttributes<App> {
-    carrera: Carrera;
-    isOpen: boolean;
-    modal: boolean;
+  carrera: Carrera;
+  isOpen: boolean;
+  modal: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
-    private filePickerInput: React.RefObject<HTMLInputElement>;
+  private filePickerInput: React.RefObject<HTMLInputElement>;
 
-    constructor(props: IAppProps) {
-        super(props);
-        this.handleImportacion = this.handleImportacion.bind(this);
-        this.handleExportacion = this.handleExportacion.bind(this);
-        this.navbarToggle = this.navbarToggle.bind(this);
-        this.verModalImportar = this.verModalImportar.bind(this);
-        this.modalToggle = this.modalToggle.bind(this);
-        this.handleCarreraChange = this.handleCarreraChange.bind(this);
-        this.handleNuevaCarrera = this.handleNuevaCarrera.bind(this);
-        this.filePickerInput = React.createRef();
-        this.state = {
-            ...props,
-            isOpen: false,
-            modal: false,
-        };
-    }
+  constructor(props: IAppProps) {
+    super(props);
+    this.handleImportacion = this.handleImportacion.bind(this);
+    this.handleExportacion = this.handleExportacion.bind(this);
+    this.navbarToggle = this.navbarToggle.bind(this);
+    this.verModalImportar = this.verModalImportar.bind(this);
+    this.modalToggle = this.modalToggle.bind(this);
+    this.handleCarreraChange = this.handleCarreraChange.bind(this);
+    this.handleNuevaCarrera = this.handleNuevaCarrera.bind(this);
+    this.handleCarreraEjemplo = this.handleCarreraEjemplo.bind(this);
+    this.filePickerInput = React.createRef();
+    this.state = {
+      ...props,
+      isOpen: false,
+      modal: false,
+    };
+  }
 
-    public handleNuevaCarrera(): void {
-        this.setState({
-            carrera: new Carrera("Nueva carrera", "Universidad", "Título"),
-        });
-    }
+  public handleNuevaCarrera(): void {
+    this.setState({
+      carrera: new Carrera("Nueva carrera", "Universidad", "Título"),
+    });
+  }
 
-    /**
-     * Lee el archivo seleccionado por el usuario y lo parsea.
-     */
-    public handleImportacion(): void {
-        new Archivos().importar(this.filePickerInput.current!.files![0], (resultado) => {
-            this.setState({
-                carrera: Parser.Carrera(JSON.parse(resultado)),
-                modal: false,
-            });
-        });
-    }
+  public handleCarreraEjemplo(): void {
+    const ejemplo = require("../ejemplo.json");
+    this.setState({
+      carrera: Parser.Carrera(ejemplo),
+      modal: false,
+    });
+  }
 
-    /**
-     * Devuelve en formato JSON la carrera actual para ser descargado.
-     */
-    public handleExportacion(): void {
-        new Archivos().exportar(this.state.carrera);
-    }
+  /**
+   * Lee el archivo seleccionado por el usuario y lo parsea.
+   */
+  public handleImportacion(): void {
+    new Archivos().importar(this.filePickerInput.current!.files![0], (resultado) => {
+      this.setState({
+        carrera: Parser.Carrera(JSON.parse(resultado)),
+        modal: false,
+      });
+    });
+  }
 
-    public verModalImportar(): void {
-        this.setState({
-            modal: true,
-        });
-    }
+  /**
+   * Devuelve en formato JSON la carrera actual para ser descargado.
+   */
+  public handleExportacion(): void {
+    new Archivos().exportar(this.state.carrera);
+  }
 
-    public navbarToggle(): void {
-        this.setState({
-            isOpen: !this.state.isOpen,
-        });
-    }
+  public verModalImportar(): void {
+    this.setState({
+      modal: true,
+    });
+  }
 
-    public modalToggle(): void {
-        this.setState({
-            modal: !this.state.modal,
-        });
-    }
+  public navbarToggle(): void {
+    this.setState({
+      isOpen: !this.state.isOpen,
+    });
+  }
 
-    public handleCarreraChange(carrera: Carrera): void {
-        this.setState((prevState) => {
-            return {carrera};
-        });
-    }
+  public modalToggle(): void {
+    this.setState({
+      modal: !this.state.modal,
+    });
+  }
 
-    public renderCarrera(): JSX.Element {
-        if (this.state.carrera.isNull()) {
-            return <Alert color="warning">Seleccioná una carrera o creá una nueva.</Alert>;
-        }
+  public handleCarreraChange(carrera: Carrera): void {
+    this.setState((prevState) => {
+      return {carrera};
+    });
+  }
 
-        return <CarreraItem onCarreraChange={this.handleCarreraChange} carrera={this.state.carrera}/>;
-    }
+  public renderCarrera(): JSX.Element {
+    if (this.state.carrera.isNull()) {
+      return (
+        <Alert color="warning">
+          <p>
+            Este proyecto está hosteado con
+            <span role="img" aria-label="slightly-smiling-face"> 💖 </span>
+            <a href="https://github.com/JuanQP/carrera-seguidor">en Github</a>
+          </p>
+          <p>
+            Para empezar, seleccioná una carrera o creá una nueva
+            <span role="img" aria-label="slightly-smiling-face"> 🙂</span>
+          </p>
+        </Alert>);
+      }
 
-    public render() {
-        return (
-            <div className="container-fluid">
-                <Navbar dark={true} color={"dark"} expand="md">
-                    <NavbarBrand className={"text-white"}>Seguidor de Carrera</NavbarBrand>
-                    <NavbarToggler onClick={this.navbarToggle} />
-                    <Collapse isOpen={this.state.isOpen} navbar={true}>
-                        <Nav className="ml-auto" navbar={true}>
-                            <NavItem>
-                                <NavLink
-                                    className="btn btn-outline-primary text-white"
-                                    href="#"
-                                    onClick={this.handleNuevaCarrera}
-                                >
-                                Nueva carrera
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink
-                                    className="btn btn-outline-primary text-white"
-                                    href="#"
-                                    onClick={this.handleExportacion}
-                                >
-                                Exportar carrera
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink
-                                    className="btn btn-outline-primary text-white"
-                                    href="#"
-                                    onClick={this.verModalImportar}
-                                >
-                                Importar carrera
-                                </NavLink>
-                            </NavItem>
-                        </Nav>
-                    </Collapse>
-                </Navbar>
+    return (
+      <CarreraItem onCarreraChange={this.handleCarreraChange} carrera={this.state.carrera}/>
+    );
+  }
 
-                {this.renderCarrera()}
+  public render() {
+    return (
+      <div>
+        <Navbar dark={true} color={"dark"} expand="md">
+          <NavbarBrand href="https://github.com/JuanQP/carrera-seguidor" className={"text-white"}>
+            <FontAwesomeIcon icon={faCode}/> Seguidor de Carrera
+          </NavbarBrand>
+          <NavbarToggler onClick={this.navbarToggle} />
+          <Collapse isOpen={this.state.isOpen} navbar={true}>
+            <Nav className="ml-auto" navbar={true}>
+              <NavItem>
+                <NavLink
+                  className="btn btn-outline-primary text-white"
+                  href="#"
+                  onClick={this.handleNuevaCarrera}
+                >
+                  Nueva carrera
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className="btn btn-outline-primary text-white"
+                  href="#"
+                  onClick={this.handleExportacion}
+                >
+                  Exportar carrera
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className="btn btn-outline-primary text-white"
+                  href="#"
+                  onClick={this.verModalImportar}
+                >
+                  Importar carrera
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className="btn btn-outline-primary text-white"
+                  href="#"
+                  onClick={this.handleCarreraEjemplo}
+                >
+                  Mostrar ejemplo
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </Navbar>
 
-                <Modal isOpen={this.state.modal} toggle={this.modalToggle} backdrop={"static"}>
-                    <ModalHeader toggle={this.modalToggle}>Importar carrera existente</ModalHeader>
-                    <ModalBody>
-                        <input ref={this.filePickerInput} type="file"/>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="success" onClick={this.handleImportacion}>Importar</Button>{" "}
-                        <Button color="secondary" onClick={this.modalToggle}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
-            </div>
-        );
-    }
+        {this.renderCarrera()}
+
+        <Modal isOpen={this.state.modal} toggle={this.modalToggle} backdrop={"static"}>
+          <ModalHeader toggle={this.modalToggle}>Importar carrera existente</ModalHeader>
+            <ModalBody>
+              <input ref={this.filePickerInput} type="file"/>
+            </ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={this.handleImportacion}>Importar</Button>{" "}
+            <Button color="secondary" onClick={this.modalToggle}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
 }
 
 export default App;
