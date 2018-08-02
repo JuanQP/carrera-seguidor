@@ -1,7 +1,7 @@
-import { faGraduationCap } from "@fortawesome/free-solid-svg-icons";
+import { faUserGraduate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
-import { Card, CardBody, Jumbotron } from "reactstrap";
+import { Card, CardBody, Jumbotron, Progress } from "reactstrap";
 import Button from "reactstrap/lib/Button";
 import CardDeck from "reactstrap/lib/CardDeck";
 import { Carrera } from "../domain/carrera";
@@ -34,6 +34,7 @@ class CarreraItem extends React.Component<ICarreraItemProps, ICarreraItemState> 
     this.handleEditarNivelModalToggle = this.handleEditarNivelModalToggle.bind(this);
     this.handleEditarCarreraModalToggle = this.handleEditarCarreraModalToggle.bind(this);
     this.RenderMateriasAprobadas = this.RenderMateriasAprobadas.bind(this);
+    this.RenderMateriasAprobadasTituloIntermedio = this.RenderMateriasAprobadasTituloIntermedio.bind(this);
     this.state = {
       editandoCarrera: false,
       editandoNivel: false,
@@ -98,7 +99,9 @@ class CarreraItem extends React.Component<ICarreraItemProps, ICarreraItemState> 
   }
 
   public renderNiveles() {
-    if (this.props.carrera.niveles.length === 0) {
+    const {carrera} = this.props;
+
+    if (carrera.niveles.length === 0) {
       return (
         <Card>
           <CardBody>
@@ -108,7 +111,7 @@ class CarreraItem extends React.Component<ICarreraItemProps, ICarreraItemState> 
       );
     }
 
-    return this.props.carrera.niveles.map(
+    return carrera.niveles.map(
       (nivel, indice) => {
         return (
           <NivelItem
@@ -123,33 +126,66 @@ class CarreraItem extends React.Component<ICarreraItemProps, ICarreraItemState> 
     );
   }
 
+  public RenderMateriasAprobadasTituloIntermedio() {
+    const {carrera} = this.props;
+    if (!carrera.tieneTituloIntermedio || carrera.materiasTituloIntermedio() === 0) {
+      return null;
+    }
+
+    const porcentaje = carrera.porcentajeTituloIntermedio();
+    return (
+      <div className="col-md">
+        <FontAwesomeIcon icon={faUserGraduate}/>
+        {" "}Título intermedio <strong>{carrera.tituloIntermedio}</strong>.
+        <Progress style={{height: "1.5rem"}} striped={true} className="bg-dark" color="success" value={porcentaje}>
+          <div>
+            <strong>{carrera.materiasAprobadasTituloIntermedio()} </strong>
+            de <strong>{carrera.materiasTituloIntermedio()}</strong> materias
+            {Number.isNaN(porcentaje) ? "" : ` (${porcentaje.toFixed(2)}% del título intermedio)`}
+          </div>
+        </Progress>
+      </div>
+    );
+  }
+
   public RenderMateriasAprobadas() {
-    if (this.props.carrera.materias().length === 0) {
+    const {carrera} = this.props;
+    if (carrera.materias().length === 0) {
       return (
         <p>No hay materias en esta carrera todavía.</p>
       );
     }
 
-    const porcentaje = this.props.carrera.porcentajeAprobadas();
+    const porcentaje = carrera.porcentajeAprobadas();
     return (
-      <p>
-        Tenés <strong>{this.props.carrera.materiasAprobadas().length}</strong> materias aprobadas
-        de <strong>{this.props.carrera.materias().length}</strong>
-        {Number.isNaN(porcentaje) ? "" : ` (${porcentaje.toFixed(2)}% de la carrera)`}.
-        El promedio de la carrera es <strong>{this.props.carrera.promedio().toFixed(2)}</strong>
-      </p>
+      <div className="col-md">
+        <FontAwesomeIcon icon={faUserGraduate}/>
+        {" "}Título de <strong>{carrera.titulo}</strong> en <strong>{carrera.universidad}</strong>.
+        <Progress style={{height: "1.5rem"}} striped={true} className="bg-dark" color="success" value={porcentaje}>
+          <div>
+            <strong>{carrera.materiasAprobadas().length} </strong>
+            de <strong>{carrera.materias().length}</strong> materias
+            {Number.isNaN(porcentaje) ? "" : ` (${porcentaje.toFixed(2)}% de la carrera)`}
+          </div>
+        </Progress>
+      </div>
     );
   }
 
   public render() {
+    const {carrera} = this.props;
+
     return (
       <div>
         <Jumbotron className={"p-4"}>
-          <h1><FontAwesomeIcon icon={faGraduationCap}/> {this.props.carrera.nombre}</h1>
-          <p>
-          Título de <strong>{this.props.carrera.titulo}</strong> en <strong>{this.props.carrera.universidad}</strong>.
-          </p>
-          <this.RenderMateriasAprobadas/>
+          <h1>{carrera.nombre}</h1>
+          <div className="row">
+            <this.RenderMateriasAprobadas/>
+            <this.RenderMateriasAprobadasTituloIntermedio/>
+          </div>
+          <div>
+            Con los finales rendidos a la fecha, el promedio de la carrera es <strong>{carrera.promedio().toFixed(2)}</strong>
+          </div>
           <Button color={"primary"} onClick={this.handleNuevoNivel}>Agregar nivel</Button>
           <Button color={"primary"} onClick={this.handleEditarCarreraModalToggle}>Editar carrera</Button>
         </Jumbotron>
@@ -162,13 +198,13 @@ class CarreraItem extends React.Component<ICarreraItemProps, ICarreraItemState> 
           <EditarCarreraModal
             onModalToggle={this.handleEditarCarreraModalToggle}
             isOpen={this.state.editandoCarrera}
-            carrera={this.props.carrera}
+            carrera={carrera}
             onCarreraChange={this.handleCarreraChange}
           />
           <EditarNivelModal
             onModalToggle={this.handleEditarNivelModalToggle}
             isOpen={this.state.editandoNivel}
-            nivel={this.props.carrera.niveles[this.state.nivelAEditar]}
+            nivel={carrera.niveles[this.state.nivelAEditar]}
             onNivelBorrado={this.handleNivelBorrado}
             onNivelChange={this.handleEditNivelChange}
           />

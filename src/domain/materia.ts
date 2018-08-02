@@ -23,12 +23,16 @@ export class Materia {
     public modalidadCursada: ModalidadCursada;
     public estado: EstadoMateria;
     public finales: number[];
+    public esElectiva: boolean;
+    public esDeTituloIntermedio: boolean;
 
     constructor(nombre: string, modalidadCursada: ModalidadCursada, estado: EstadoMateria) {
         this.nombre = nombre;
         this.modalidadCursada = modalidadCursada;
         this.estado = estado;
         this.finales = [];
+        this.esElectiva = false;
+        this.esDeTituloIntermedio = false;
     }
 
     public finalAprobado(): boolean {

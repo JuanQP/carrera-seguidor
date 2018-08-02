@@ -24,7 +24,12 @@ class EditarMateriaModal extends React.Component<IMateriaItemProps> {
 
   public handleActualizacionMateria(e: React.ChangeEvent<HTMLInputElement>): void {
     const {materia} = this.props;
-    materia[e.target.name] = e.target.name === "estado" ? Number(e.target.value) : e.target.value;
+    if (e.target.name === "estado") {
+      materia[e.target.name] = Number(e.target.value);
+    }
+    else {
+      materia[e.target.name] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    }
     this.props.onMateriaChange(materia);
   }
 
@@ -43,6 +48,8 @@ class EditarMateriaModal extends React.Component<IMateriaItemProps> {
       return null;
     }
 
+    const {materia} = this.props;
+
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onModalToggle} backdrop={"static"}>
         <ModalHeader toggle={this.props.onModalToggle}>Editar materia</ModalHeader>
@@ -54,7 +61,7 @@ class EditarMateriaModal extends React.Component<IMateriaItemProps> {
               type="text"
               onChange={this.handleActualizacionMateria}
               maxLength={100}
-              value={this.props.materia.nombre}
+              value={materia.nombre}
             />
           </FormGroup>
           <FormGroup>
@@ -64,7 +71,7 @@ class EditarMateriaModal extends React.Component<IMateriaItemProps> {
               type="select"
               onChange={this.handleActualizacionMateria}
               maxLength={100}
-              value={this.props.materia.modalidadCursada}
+              value={materia.modalidadCursada}
             >
               <option value={ModalidadCursada.Anual}>Anual</option>
               <option value={ModalidadCursada.Cuatrimestral}>Cuatrimestral</option>
@@ -77,7 +84,7 @@ class EditarMateriaModal extends React.Component<IMateriaItemProps> {
               type="select"
               onChange={this.handleActualizacionMateria}
               maxLength={100}
-              value={this.props.materia.estado}
+              value={materia.estado}
             >
               <option value={EstadoMateria.Pendiente}>Pendiente</option>
               <option value={EstadoMateria.Cursando}>Cursando</option>
@@ -87,7 +94,29 @@ class EditarMateriaModal extends React.Component<IMateriaItemProps> {
           </FormGroup>
           <FormGroup>
             <Label>Finales</Label>
-            <InputFinales finales={this.props.materia.finales} onFinalesChange={this.handleFinalesChange}/>
+            <InputFinales finales={materia.finales} onFinalesChange={this.handleFinalesChange}/>
+          </FormGroup>
+          <FormGroup check={true}>
+            <Label check={true}>
+              <Input
+                name="esElectiva"
+                type="checkbox"
+                onChange={this.handleActualizacionMateria}
+                checked={materia.esElectiva}
+              />
+              Materia electiva
+            </Label>
+          </FormGroup>
+          <FormGroup check={true}>
+            <Label check={true}>
+              <Input
+                name="esDeTituloIntermedio"
+                type="checkbox"
+                onChange={this.handleActualizacionMateria}
+                checked={materia.esDeTituloIntermedio}
+              />
+              Materia necesaria para el título intermedio
+            </Label>
           </FormGroup>
         </ModalBody>
         <ModalFooter className={"justify-content-between"}>

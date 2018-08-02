@@ -20,7 +20,7 @@ class EditarCarreraModal extends React.Component<IEditarCarreraModalProps> {
 
   public handleActualizacionCarrera(e: React.ChangeEvent<HTMLInputElement>): void {
     const {carrera} = this.props;
-    carrera[e.target.name] = e.target.value;
+    carrera[e.target.name] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     this.props.onCarreraChange(carrera);
   }
 
@@ -57,6 +57,27 @@ class EditarCarreraModal extends React.Component<IEditarCarreraModalProps> {
               onChange={this.handleActualizacionCarrera}
               maxLength={100}
               value={this.props.carrera.titulo}
+            />
+          </FormGroup>
+          <FormGroup check={true}>
+            <Label check={true}>
+              <Input
+                name="tieneTituloIntermedio"
+                type="checkbox"
+                onChange={this.handleActualizacionCarrera}
+                checked={this.props.carrera.tieneTituloIntermedio}
+              />
+              Tiene título intermedio
+            </Label>
+          </FormGroup>
+          <FormGroup className={this.props.carrera.tieneTituloIntermedio ? "" : "sr-only"}>
+            <Label>Título Intermedio</Label>
+            <Input
+              name="tituloIntermedio"
+              type="text"
+              onChange={this.handleActualizacionCarrera}
+              maxLength={100}
+              value={this.props.carrera.tituloIntermedio}
             />
           </FormGroup>
         </ModalBody>

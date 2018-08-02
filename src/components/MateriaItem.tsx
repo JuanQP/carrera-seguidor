@@ -40,16 +40,20 @@ class MateriaItem extends React.Component<IMateriaItemProps, IMateriaItemState> 
   }
 
   public render() {
+    const {materia} = this.props;
+
     return (
       <ListGroupItem
         tag="a"
         href="#"
         action={true}
-        color={this.color(this.props.materia)}
+        color={this.color(materia)}
         onClick={this.handleClick}
         className={"text-overflow"}
       >
-        {this.props.materia.nombre}
+        <div className={materia.esElectiva ? "font-italic" : ""}>
+          {materia.nombre}
+        </div>
       </ListGroupItem>
     );
   }

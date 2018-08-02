@@ -7,6 +7,8 @@ interface IRegistroCarrera {
     universidad: string;
     titulo: string;
     niveles: IRegistroNivel[];
+    tieneTituloIntermedio: boolean;
+    tituloIntermedio: string;
 }
 
 interface IRegistroNivel {
@@ -19,6 +21,8 @@ interface IRegistroMateria {
     modalidadCursada: ModalidadCursada;
     estado: EstadoMateria;
     finales: number[];
+    esElectiva: boolean;
+    esDeTituloIntermedio: boolean;
 }
 
 /**
@@ -28,6 +32,8 @@ export class Parser {
     public static Carrera(json: IRegistroCarrera): Carrera {
         const niveles: Nivel[] = json.niveles.map((n) => Parser.Nivel(n));
         const carrera: Carrera = new Carrera(json.nombre, json.universidad, json.titulo);
+        carrera.tieneTituloIntermedio = json.tieneTituloIntermedio;
+        carrera.tituloIntermedio = json.tituloIntermedio;
         carrera.niveles = niveles;
 
         return carrera;
@@ -42,6 +48,8 @@ export class Parser {
     public static Materia(json: IRegistroMateria): Materia {
         const materia = new Materia(json.nombre, json.modalidadCursada, json.estado);
         materia.finales = json.finales;
+        materia.esElectiva = json.esElectiva ? json.esElectiva : false;
+        materia.esDeTituloIntermedio = json.esDeTituloIntermedio ? json.esDeTituloIntermedio : false;
 
         return materia;
     }
